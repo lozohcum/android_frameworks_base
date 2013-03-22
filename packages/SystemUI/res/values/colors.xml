@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources>
+
+    <drawable name="notification_number_text_color">#ff000000</drawable>
+    <drawable name="ticker_background_color">#ff1d1d1d</drawable>
+    <drawable name="status_bar_background">#ff000000</drawable>
+
+    <color name="notification_panel_solid_background">#ff000000</color>
+
+    <drawable name="status_bar_recents_app_thumbnail_background">#88000000</drawable>
+
+    <color name="status_bar_recents_app_label_color">#ffffffff</color>
+
+    <drawable name="status_bar_notification_row_background_color">#ff090909</drawable>
+
+    <color name="notification_list_shadow_top">#80000000</color>
+
+    <drawable name="recents_callout_line">#99ffffff</drawable>
+    <drawable name="notification_item_background_legacy_color">#ffaaaaaa</drawable>
+    <drawable name="intruder_bg_pressed">#ff33B5E5</drawable>
+    <drawable name="nav_bar_bg">#ff000000</drawable>
+
+    <!-- ==================== system bar only ==================== -->
+    <drawable name="system_bar_background">#ff000000</drawable>
+    <!-- the darkening filter applied to notifications -->
+    <drawable name="notification_icon_area_smoke">#aa000000</drawable>
+
+    <color name="ticker_text_color">#ffffffff</color>
+
+    <!-- Modify by shendu,Zhao -->
+    <color name="top_bg_color">#dddddd</color>
+    <color name="spn_bg_color">#ced9e0</color>
+    <color name="close_drag_bg_color">#dddddd</color>
+    <color name="power_widget_bg_color">#e7e8e9 </color>
+    <color name="font_color">#616668</color>
+    <color name="power_widget_panel_bg_color">#00f1f1f1</color>
+    <color name="power_widget_panel_text_enable_color">#ff199dd9</color>
+    <color name="power_widget_panel_text_disable_color">#ffc6c6c6</color>
+    <color name="spn_text_color">#c6c6c6</color>
+    <color name="network_text_color">#c6c6c6</color>
+    <color name="dateview_text_color_normal">#c6c6c6</color>
+    <color name="dateview_text_color_pressed">#2990d2</color>
+    <color name="network_list_item_color">#c6c6c6</color>
+    <color name="network_list_divider_color">#212426</color>
+    <color name="recent_text_color">#ffffff</color>
+    <color name="kill_all_btn_color">#999999</color>
+    <color name="kill_all_btn_press_color">#4d4d4d</color>
+    <color name="no_recent_apps_text_color">#aaaaaa</color>
+
+</resources>

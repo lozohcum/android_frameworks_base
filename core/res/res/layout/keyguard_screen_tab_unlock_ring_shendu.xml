@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+**
+** Copyright 2009, The Android Open Source Project
+** Copyright 2012, The CyanogenMod Project (Weather, Calendar)
+**
+** Licensed under the Apache License, Version 2.0 (the "License")
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<!--
+  This is the general lock screen which shows information about the
+  state of the device, as well as instructions on how to get past it
+  depending on the state of the device.  It is the same for landscape
+  and portrait.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <com.android.internal.widget.DigitalClock
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/keyguard_lockscreen_status_clock_top_margin" >
+
+        <TextView
+            android:id="@+id/timeDisplayBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="none"
+            android:shadowColor="#7f000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:singleLine="true"
+            android:textColor="@color/lockscreen_clock_background"
+            android:textSize="@dimen/keyguard_lockscreen_clock_font_size" />
+
+        <TextView
+            android:id="@+id/timeDisplayForeground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/timeDisplayBackground"
+            android:layout_alignTop="@id/timeDisplayBackground"
+            android:ellipsize="none"
+            android:shadowColor="#7f000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:singleLine="true"
+            android:textColor="@color/lockscreen_clock_foreground"
+            android:textSize="@dimen/keyguard_lockscreen_clock_font_size" />
+
+        <TextView
+            android:id="@+id/amPm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/timeDisplayForeground"
+            android:layout_marginTop="@dimen/keyguard_lockscreen_clock_font_ampm_offset"
+            android:layout_toRightOf="@id/timeDisplayForeground"
+            android:ellipsize="none"
+            android:shadowColor="#7f000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:singleLine="true"
+            android:textColor="@color/lockscreen_clock_foreground"
+            android:textSize="@dimen/keyguard_lockscreen_clock_font_ampm_size" />
+    </com.android.internal.widget.DigitalClock>
+
+    <LinearLayout
+        android:id="@+id/date_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/keyguard_lockscreen_status_line_top_margin"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:shadowColor="#7f000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/lockscreen_clock_foreground"
+            android:textSize="@dimen/keyguard_lockscreen_status_line_font_size" />
+
+        <TextView
+            android:id="@+id/alarm_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyguard_lockscreen_status_margin_top"
+            android:drawablePadding="4dip"
+            android:ellipsize="marquee"
+            android:shadowColor="#7f000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/lockscreen_clock_foreground"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/status1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/date_line"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/keyguard_lockscreen_status_margin_top"
+            android:drawablePadding="4dip"
+            android:ellipsize="marquee"
+            android:shadowColor="#7f000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/lockscreen_clock_foreground"
+            android:textSize="14sp" />
+    </LinearLayout>
+    <!-- CyanogenMod Calendar Panel -->
+
+    <LinearLayout
+        android:id="@+id/calendar_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/time"
+        android:layout_below="@+id/date_line"
+        android:gravity="center_vertical"
+        android:minHeight="28dip" >
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:src="@drawable/ic_lock_idle_calendar" />
+
+        <View
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:background="@android:drawable/divider_horizontal_dark"
+            android:paddingBottom="6dip"
+            android:paddingTop="6dip" />
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="6dip"
+            android:paddingLeft="4dip"
+            android:paddingTop="6dip" >
+
+            <TextView
+                android:id="@+id/calendar_event_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/calendar_event_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/calendar_event_title"
+                android:layout_below="@id/calendar_event_title"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- CyanogenMod Weather Panel -->
+
+    <RelativeLayout
+        android:id="@+id/weather_panel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="4dip" >
+
+        <ImageView
+            android:id="@+id/weather_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="8dip"
+            android:paddingRight="8dip"
+            android:src="@android:drawable/ic_dialog_alert" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/weather_image"
+            android:orientation="horizontal"
+            android:padding="4dip" >
+
+            <TextView
+                android:id="@+id/weather_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:ellipsize="marquee"
+                android:gravity="right"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/weather_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/weather_city"
+                android:ellipsize="marquee"
+                android:gravity="right"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/weather_condition"
+                android:gravity="right"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="8sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/weather_temps_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/weather_image"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/weather_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/weather_divider"
+                android:layout_width="44dip"
+                android:layout_height="1dip"
+                android:layout_below="@id/weather_temp"
+                android:background="@android:drawable/divider_horizontal_dark" />
+
+            <TextView
+                android:id="@+id/weather_low_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weather_divider"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="2dip"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <!-- emergency call button shown when sim is PUKd and tab_selector is hidden -->
+
+    <Button
+        android:id="@+id/emergencyCallButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="16dip"
+        android:layout_marginTop="4dip"
+        android:drawableLeft="@*android:drawable/lockscreen_emergency_button"
+        android:drawablePadding="4dip"
+        android:text="@*android:string/lockscreen_emergency_call"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.android.internal.widget.Ring.MulitRingView
+            android:id="@+id/unlock_widget"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="fill"
+            android:chargeTextBigSize="@dimen/mulitringview_charge_text_big_size"
+            android:chargeTextColor="0xffe7e7e7"
+            android:chargeTextSmallSize="@dimen/mulitringview_charge_text_small_size"
+            android:chargeWidth="@dimen/mulitringview_charge_width"
+            android:defaultImage="@drawable/default_header"
+            android:dotOffsetFromCenter="@dimen/mulitringview_dot_offset_from_center"
+            android:dotOffsetSpan="@dimen/mulitringview_dot_offset_span"
+            android:focusable="true"
+            android:iconBottom="@drawable/ic_lock_unlock"
+            android:iconBottomActive="@drawable/ic_lock_unlock_activated"
+            android:iconLeft="@drawable/ic_lock_call"
+            android:iconLeftActive="@drawable/ic_lock_call_activated"
+            android:iconOffset="8"
+            android:iconRight="@drawable/ic_lock_sms"
+            android:iconRightActive="@drawable/ic_lock_sms_activated"
+            android:iconUp="@drawable/ic_lock_camera"
+            android:iconUpActive="@drawable/ic_lock_camera_activated"
+            android:innerRadius="@dimen/mulitringview_inner_radius"
+            android:outerRadius="@dimen/mulitringview_outer_radius"
+            android:ringCenterPaddingTop="@dimen/mulitringview_center_padding_top"
+            android:vibrateDuration="20" />
+
+        <TextView
+            android:id="@+id/carrier"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dip"
+            android:ellipsize="marquee"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="@dimen/keyguard_lockscreen_status_line_font_size"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/emergencyCallButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:drawableLeft="@*android:drawable/lockscreen_emergency_button"
+            android:drawablePadding="0dip"
+            android:text="@*android:string/lockscreen_emergency_call"
+            android:textSize="@dimen/keyguard_lockscreen_status_line_font_size"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!--
+    Music transport control 
+    <include android:id="@+id/transport"
+        layout="@layout/keyguard_transport_control"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_rowSpan="5"
+        android:layout_columnSpan="1"
+        android:layout_gravity="fill"
+        android:layout_width="0dip"
+        android:layout_height="0dip"
+        /
+    -->
+
+</RelativeLayout>

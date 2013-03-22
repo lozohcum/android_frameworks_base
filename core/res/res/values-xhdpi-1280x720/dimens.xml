@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--  Size of top margin on Clock font to edge on unlock LockScreen -->
+    <!-- clock widget data 720-->
+    <dimen type="dimen" name="shendu_clock_widget_mtext_size">73.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_mp_size">14.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_mp_offset_l">9.6dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_mp_offset_r">20.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_date_size">16.7dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_cap_offset_l">106.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_time_offset_r">79.6dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_time_Hour_r">20.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_time_Minutes_r">118.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_cap_off">35.6dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_date_r">25.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_date_l">116.6dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_week_r">196.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_week_l">116.6dp</dimen>
+    <dimen type="dimen" name="shendu_clock_widget_top_off">29.6dp</dimen>
+        <!-- clock widget flip -->
+    <dimen type="dimen" name="shendu_clock_flip_widget_mp_size">13dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_time_r">11dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_time_l">76dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_pm_r">6.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_pm_l">14.6dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_time_hour_offset">3.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_time_minutes_offset">110.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_date_r">12.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_date_l">123.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_week_r">205.0dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_week_l">123.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_flip_widget_top_off">16.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_filp_widget_middle_w">2.5dp</dimen>
+    <dimen type="dimen" name="shendu_clock_filp_widget_middle_h">12.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_filp_widget_line_w">6.3dp</dimen>
+    <dimen type="dimen" name="shendu_clock_filp_widget_bg_topset">3.0dp</dimen>
+    <!-- shendu ring config -->
+    <dimen name="mulitringview_inner_radius">57.5dp</dimen>
+	<dimen name="mulitringview_outer_radius">150dp</dimen>
+	<dimen type="dimen" name="mulitringview_charge_width">4px</dimen>
+	<dimen type="dimen" name="mulitringview_center_padding_top">468dp</dimen>
+	<dimen type="dimen" name="mulitringview_dot_offset_from_center">72dp</dimen>
+	<dimen type="dimen" name="mulitringview_dot_offset_span">10dp</dimen>
+	
+	<dimen name="keyguard_lockscreen_status_clock_top_margin">66.5dp</dimen>
+    <dimen name="keyguard_lockscreen_status_line_top_margin">150dp</dimen>
+    <!-- for ActionBar-->
+    <dimen name="action_bar_default_height">55dip</dimen>
+    <dimen name="action_bar_stacked_max_height">55dp</dimen>
+
+  <!-- switch text thumb Padding  value xhdpi is 15dip-->
+    <dimen name="shendu_switch_text_thumb_padding_value">15dip</dimen>
+    
+</resources>

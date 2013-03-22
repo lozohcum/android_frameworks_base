@@ -1,0 +1,10 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_enabled="false" android:color="@android:color/shendu_adapter_text_disable_color_light"/><!-- @android:color/shendu_adapter_text_disable_color -->
+    <item android:state_window_focused="false" android:color="@android:color/shendu_adapter_summary_text_enable_color_light"/>
+    <item android:state_pressed="true" android:color="@android:color/shendu_adapter_summary_text_enable_color_light"/>
+    <item android:state_selected="true" android:color="@android:color/shendu_adapter_summary_text_enable_color_light"/>
+    <item android:state_activated="true" android:color="@android:color/shendu_adapter_summary_text_enable_color_light"/>
+    <item android:color="@android:color/shendu_adapter_summary_text_enable_color_light"/> <!-- not selected -->
+    
+</selector>
