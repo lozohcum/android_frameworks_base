@@ -135,7 +135,10 @@ class SelectActionModeCallback implements ActionMode.Callback {
                 if (!(mWebView.getContext() instanceof Activity)) {
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 }
-                mWebView.getContext().startActivity(i);
+				try{
+                	mWebView.getContext().startActivity(i);
+				}catch(Exception e){
+				}
                 break;
             case com.android.internal.R.id.openurl:
                 String url = mWebView.getSelection();
