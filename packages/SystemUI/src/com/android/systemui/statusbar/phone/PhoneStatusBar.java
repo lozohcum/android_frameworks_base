@@ -106,6 +106,7 @@ import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.statusbar.powerwidget.PowerWidgetPanel;
 
 import com.android.systemui.R;
+import com.android.systemui.TransparencyManager;
 import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.NotificationData;
@@ -208,6 +209,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     Display mDisplay;
 
     IWindowManager mWindowManager;
+    TransparencyManager mTransparencyManager;
 
     StatusBarWindowView mStatusBarWindow;
     PhoneStatusBarView mStatusBarView;
@@ -312,6 +314,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     int mInitialTouchX;
     int mInitialTouchY;
     Runnable mPostCollapseCleanup = null;
+    
+    int mBgColorValue = 1;
+    int mLastBgColorValue = 1;
 
     // last theme that was applied in order to detect theme change (as opposed
     // to some other configuration change).
@@ -513,7 +518,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mStatusBarView = (PhoneStatusBarView) mStatusBarWindow
                 .findViewById(R.id.status_bar);
-        setStatusBarBackground(1);
         mNotificationPanel = mStatusBarWindow
                 .findViewById(R.id.notification_panel);
         // don't allow clicks on the panel to pass through to the background
@@ -585,6 +589,10 @@ public class PhoneStatusBar extends BaseStatusBar {
             mPowerWidgetPanel.destroyWidget();
         }
 
+        mTransparencyManager = new TransparencyManager(mContext);
+        //mTransparencyManager.setNavbar(mNavigationBarView);
+        mTransparencyManager.setStatusbar(mStatusBarView);
+        
         mPager = (SuperViewPager) mStatusBarWindow.findViewById(R.id.viewPager);
         mPageList = new ArrayList<View>();
         mPager.mService = this;
@@ -840,8 +848,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction("shendu.change.statusbar");
-        filter.addAction(Intent.ACTION_USER_PRESENT);
         context.registerReceiver(mBroadcastReceiver, filter);
 
         mPowerWidget.setupWidget();
@@ -2331,6 +2337,8 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void topAppWindowChanged(boolean showMenu) {
+        mTransparencyManager.update();
+
         if (DEBUG) {
             Slog.d(TAG, (showMenu ? "showing" : "hiding") + " the MENU button");
         }
@@ -2902,22 +2910,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 repositionNavigationBar();
                 updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
                 computeDateViewWidth();
-            } else if (action.equals("shendu.change.statusbar")) {
-                int isHome = intent.getIntExtra("isHome", 0);
-
-                if (isHome != 2)
-                    value = isHome;
-
-                if (flag) {
-                    setStatusBarBackground(isHome);
-                    if (isHome == 2)
-                        flag = false;
-                }
-
-                Log.i("shendu", "Reciver Shendu broadcast, isHome=" + isHome);
-            } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
-                flag = true;
-                setStatusBarBackground(value);
             }
         }
     };
@@ -3544,41 +3536,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 }
             }
             return null;
-        }
-    }
-
-    public void setStatusBarBackground(int value) {
-        final int mColor;
-        switch (mStatusBarBackground) {
-            case 1: // 50% alpha
-                mColor = 0x7f000000;
-                break;
-            case 2: // 100% alpha
-                mColor = 0x00000000;
-                break;
-            case 0: // 0% alpha
-            default:
-                mColor = 0xff000000;
-        }
-
-        switch (value) {
-            case 0:
-                mStatusBarView.setBackgroundColor(
-                        mContext.getResources().getColor(android.R.color.black));
-                break;
-            case 1:
-                Runnable runable = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        mStatusBarView.setBackgroundColor(mColor);
-                    }
-                };
-                mHandler.postDelayed(runable, 100);
-                break;
-            case 2:
-                mStatusBarView.setBackgroundColor(android.R.color.transparent);
         }
     }
 

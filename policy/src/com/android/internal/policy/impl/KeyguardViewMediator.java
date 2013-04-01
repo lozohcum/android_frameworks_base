@@ -1202,12 +1202,6 @@ public class KeyguardViewMediator implements KeyguardViewCallback,
 
             mKeyguardViewManager.show();
             mShowing = true;
-	        //send broadcast for change background for statusbar
-	    if(ActivityManagerNative.isSystemReady()) {
-	    	Intent mIntent = new Intent("shendu.change.statusbar");
-    	    	mIntent.putExtra("isHome", 2);
-    	    	mContext.sendBroadcast(mIntent);
-	    }
             updateActivityLockScreenState();
             adjustUserActivityLocked();
             adjustStatusBarLocked();

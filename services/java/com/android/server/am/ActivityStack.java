@@ -1195,17 +1195,6 @@ final class ActivityStack {
         }
         prev.cpuTimeAtResume = 0; // reset it
     }
-    /**
-     *Add by fwsun
-     * send Intent to change the blackground of statusbar
-     */
-     private void sendIsHomeIntent(int value){
-       if (ActivityManagerNative.isSystemReady()) {
-	   Intent mIntent = new Intent("shendu.change.statusbar");
-    	   mIntent.putExtra("isHome", value);
-    	   mContext.sendBroadcast(mIntent);
-       }
-     }
 
     /**
      * Once we know that we have asked an application to put an activity in
@@ -1216,11 +1205,7 @@ final class ActivityStack {
         if (!acceptToStart(next.packageName)) {
             startUnlockActivity(next.packageName);
         }
-		if(next.isHome()) {
-			sendIsHomeIntent(1);
-		} else {
-			sendIsHomeIntent(0);
-		}
+
         next.idle = false;
         next.results = null;
         next.newIntents = null;
@@ -4598,13 +4583,6 @@ final class ActivityStack {
 
     private final boolean relaunchActivityLocked(ActivityRecord r,
             int changes, boolean andResume) {
-        /*************add sys ui backgroup change******************/
-        if(r.isHome()) {
-            sendIsHomeIntent(1);
-        } else {
-            sendIsHomeIntent(0);
-        }
-        /**********************************************************/
         List<ResultInfo> results = null;
         List<Intent> newIntents = null;
         if (andResume) {

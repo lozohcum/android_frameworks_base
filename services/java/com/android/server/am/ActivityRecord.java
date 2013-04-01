@@ -768,14 +768,6 @@ final class ActivityRecord {
         }
     }
 
-	/**
-	*Add by fwsun
-	*@hide
-	*/
-	public boolean isHome(){
-		return isHomeActivity;
-	}
-
     public void windowsVisible() {
         synchronized(service) {
             stack.reportActivityVisibleLocked(this);
