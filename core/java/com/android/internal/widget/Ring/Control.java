@@ -789,14 +789,14 @@ public class Control{
     	if(mOnTriggerListener!=null)
 				mOnTriggerListener.onGrabbedStateChange(MulitRingView.OnTriggerListener.NO_HANDLE);
 		
-    	mOnTriggerListener = null;
     	isRunning = false;
+        releaseDrawable();
+        mOnTriggerListener = null;
     	if(exec!=null){
     		exec.shutdown();
     		exec.shutdownNow();
     		exec = null;
     	}
-    	releaseDrawable();
     	mResource = null;
     	mainView = null;
 		System.gc();
