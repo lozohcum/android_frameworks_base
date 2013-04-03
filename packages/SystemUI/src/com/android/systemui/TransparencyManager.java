@@ -210,15 +210,15 @@ public class TransparencyManager {
         }
 
         void observe() {
-//            ContentResolver resolver = mContext.getContentResolver();
-//
+            ContentResolver resolver = mContext.getContentResolver();
+
 //            resolver.registerContentObserver(
 //                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_ALPHA_CONFIG), false,
 //                    this);
-//            resolver.registerContentObserver(
-//                    Settings.System.getUriFor(Settings.System.STATUS_BAR_ALPHA_CONFIG), false,
-//                    this);
-//            updateSettings();
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.STATUS_BAR_BACKGROUND), false,
+                    this);
+            updateSettings();
         }
 
         @Override
@@ -228,7 +228,7 @@ public class TransparencyManager {
     }
 
     protected void updateSettings() {
-//        ContentResolver resolver = mContext.getContentResolver();
+        ContentResolver resolver = mContext.getContentResolver();
 //
 //        final float defaultAlpha = new Float(mContext.getResources().getInteger(
 //                R.integer.navigation_bar_transparency) / 255);
@@ -261,6 +261,25 @@ public class TransparencyManager {
 //            }
 //        }
 //
-//        update();
+
+        //Logical for statusbar.Add by ShenDu.Zhao
+        final int mStatusBarBackground = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_BACKGROUND, 1);
+
+        switch (mStatusBarBackground) {
+            case 0:  //0% alpha
+                mStatusbarInfo.homeAlpha = 1;
+                mStatusbarInfo.keyguardAlpha = 1;
+                break;
+            case 1:  //50% alpha
+                mStatusbarInfo.homeAlpha = 0.5f;
+                mStatusbarInfo.keyguardAlpha = 0;
+                break;
+            case 2:  //100% alpha
+                mStatusbarInfo.homeAlpha = 0;
+                mStatusbarInfo.keyguardAlpha = 0;
+        }
+
+        update();
     }
 }
