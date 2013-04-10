@@ -48,6 +48,7 @@ import android.media.AudioManager;
 import android.media.IAudioService;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IRemoteCallback;
@@ -158,9 +159,11 @@ import android.media.IAudioService;
 import android.media.AudioService;
 import android.media.AudioManager;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -189,6 +192,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     // Should screen savers use their own timeout, or the SCREEN_OFF_TIMEOUT?
     static final boolean SEPARATE_TIMEOUT_FOR_SCREEN_SAVER = false;
+
+    // Enable Catch Log, for test, add by ShenDu, Dante
+    static final boolean CATCH_LOG_ENABLE = true;
 
     static final int LONG_PRESS_POWER_NOTHING = 0;
     static final int LONG_PRESS_POWER_GLOBAL_ACTIONS = 1;
@@ -847,6 +853,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    // Catch log by ShenDu, Dante
+    private void interceptCatchLog() {
+        if (CATCH_LOG_ENABLE
+                && mVolumeUpKeyTriggered && mPowerKeyTriggered && !mVolumeDownKeyTriggered) {
+            final long now = SystemClock.uptimeMillis();
+            if (now <= mVolumeUpKeyTime + ACTION_CHORD_DEBOUNCE_DELAY_MILLIS
+                    && now <= mPowerKeyTime + ACTION_CHORD_DEBOUNCE_DELAY_MILLIS) {
+                mVolumeUpKeyConsumedByChord = true;
+                cancelPendingPowerKeyAction();
+
+                mHandler.postDelayed(mCatchLogChordLongPress,
+                        ViewConfiguration.getGlobalActionKeyTimeout());
+            }
+        }
+    }
+
+    private void cancelPendingCatchLog() {
+        mHandler.removeCallbacks(mCatchLogChordLongPress);
+    }
+
+    //end
+
     private void interceptScreenshotChord() {
         if (mScreenshotChordEnabled
                 && mVolumeDownKeyTriggered && mPowerKeyTriggered && !mVolumeUpKeyTriggered) {
@@ -913,6 +941,25 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private final Runnable mScreenshotChordLongPress = new Runnable() {
         public void run() {
             takeScreenshot();
+        }
+    };
+
+    // Add by ShenDu, Dante
+    private final Runnable mCatchLogChordLongPress = new Runnable() {
+        public void run() {
+           try {
+               String savePath = Environment.getExternalStorageDirectory().getPath() + "/";
+               java.lang.Process process = Runtime.getRuntime().exec("su");
+               DataOutputStream os = new DataOutputStream(process.getOutputStream());
+               os.writeBytes("mkdir " + savePath);
+               os.writeBytes("logcat -v time -d -f " + savePath + "logcat.txt" + "\n");
+               os.writeBytes("dmesg > " + savePath + "dmesg.txt" + "\n");
+               os.writeBytes("exit\n");
+               takeScreenshot(savePath + "logcat.txt" + "|" + savePath + "dmesg.txt");
+           } catch (Exception e) {
+               Log.i("CatchLog", e.toString());
+               takeScreenshot();
+           }
         }
     };
 
@@ -1211,6 +1258,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         intent = context.registerReceiver(mPowerReceiver, filter);
+
+        filter = new IntentFilter();
+        filter.addAction("com.shendu.catchlog");
+        context.registerReceiver(mTakeScreenshotReceiver, filter);
+
         if (intent != null) {
             mPluggedIn = (0 != intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
         }
@@ -3846,8 +3898,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     };
 
-    // Assume this is called from the Handler thread.
+    // Add by ShenDu, Dante
     private void takeScreenshot() {
+        takeScreenshot(null);
+    }
+
+    // Assume this is called from the Handler thread.
+    private void takeScreenshot(String logPath) {
         synchronized (mScreenshotLock) {
             if (mScreenshotConnection != null) {
                 return;
@@ -3856,6 +3913,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     "com.android.systemui.screenshot.TakeScreenshotService");
             Intent intent = new Intent();
             intent.setComponent(cn);
+
+            // Add by ShenDu, Dante
+            if (logPath != null && !logPath.isEmpty()) {
+                intent.putExtra("data", logPath);
+            }
+
             ServiceConnection conn = new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
@@ -4009,6 +4072,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mVolumeDownKeyTime = event.getDownTime();
                             mVolumeDownKeyConsumedByChord = false;
                             cancelPendingPowerKeyAction();
+                            cancelPendingCatchLog();
                             interceptScreenshotChord();
                             interceptRingerChord();
                         }
@@ -4026,6 +4090,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mVolumeUpKeyConsumedByChord = false;
                             cancelPendingPowerKeyAction();
                             cancelPendingScreenshotChordAction();
+                            interceptCatchLog();
                             interceptRingerChord();
                         }
                     } else {
@@ -4304,6 +4369,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
             updateRotation(true);
             updateOrientationListenerLp();
+        }
+    };
+
+    BroadcastReceiver mTakeScreenshotReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            mCatchLogChordLongPress.run();
         }
     };
 

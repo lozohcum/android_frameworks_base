@@ -218,5 +218,7 @@
                      个进程和 <xliff:g id="numservices">%2$d</xliff:g> 个服务</string>
     <string name="recents_kill_all_button_text">一键清理</string>
 
-        <string name="memory_toast_text">成功释放了 <xliff:g id="memory">%1$s</xliff:g> 内存</string>
+    <string name="memory_toast_text">成功释放了 <xliff:g id="memory">%1$s</xliff:g> 内存</string>
+
+    <string name="log_dump_text">日志和截图已经截取到 %s</string>
 </resources>

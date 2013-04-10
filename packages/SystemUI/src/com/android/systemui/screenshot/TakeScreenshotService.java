@@ -28,6 +28,9 @@ public class TakeScreenshotService extends Service {
     private static final String TAG = "TakeScreenshotService";
 
     private static GlobalScreenshot mScreenshot;
+    // This value for catching Log
+    // Add by ShenDu, Dante
+    private static String mLogPath;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -38,6 +41,7 @@ public class TakeScreenshotService extends Service {
                     if (mScreenshot == null) {
                         mScreenshot = new GlobalScreenshot(TakeScreenshotService.this);
                     }
+                    mScreenshot.setLogPath(mLogPath);
                     mScreenshot.takeScreenshot(new Runnable() {
                         @Override public void run() {
                             Message reply = Message.obtain(null, 1);
@@ -53,6 +57,7 @@ public class TakeScreenshotService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        mLogPath = intent.getStringExtra("data");
         return new Messenger(mHandler).getBinder();
     }
 }

@@ -495,4 +495,6 @@
     
     <string name="memory_toast_text">Release <xliff:g id="memory">%1$s</xliff:g> Memory</string>
 
+    <string name="log_dump_text">Log File has dump to %s</string>
+
 </resources>

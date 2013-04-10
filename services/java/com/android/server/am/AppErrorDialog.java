@@ -18,13 +18,21 @@ package com.android.server.am;
 
 import static android.view.WindowManager.LayoutParams.FLAG_SYSTEM_ERROR;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Slog;
 import android.view.WindowManager;
+
+import java.io.DataOutputStream;
 
 class AppErrorDialog extends BaseErrorDialog {
     private final static String TAG = "AppErrorDialog";
@@ -38,9 +46,12 @@ class AppErrorDialog extends BaseErrorDialog {
 
     // 5-minute timeout, then we automatically dismiss the crash dialog
     static final long DISMISS_TIMEOUT = 1000 * 60 * 5;
+
+    Context mContext;
     
     public AppErrorDialog(Context context, AppErrorResult result, ProcessRecord app) {
         super(context);
+        mContext = context;
         
         Resources res = context.getResources();
         
@@ -65,11 +76,18 @@ class AppErrorDialog extends BaseErrorDialog {
                 res.getText(com.android.internal.R.string.force_close),
                 mHandler.obtainMessage(FORCE_QUIT));
 
-        if (app.errorReportReceiver != null) {
-            setButton(DialogInterface.BUTTON_NEGATIVE,
-                    res.getText(com.android.internal.R.string.report),
-                    mHandler.obtainMessage(FORCE_QUIT_AND_REPORT));
-        }
+        final Object errReportReceiver = app.errorReportReceiver;
+        setButton(DialogInterface.BUTTON_NEGATIVE,
+                res.getText(com.android.internal.R.string.report), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                    if (errReportReceiver != null) {
+                                        mHandler.obtainMessage(FORCE_QUIT_AND_REPORT);
+                                    } else {
+                                        mContext.sendBroadcast(new Intent("com.shendu.catchlog"));
+                                        mHandler.obtainMessage(FORCE_QUIT);
+                                    }
+                            }
+                        });
 
         setTitle(res.getText(com.android.internal.R.string.aerr_title));
         getWindow().addFlags(FLAG_SYSTEM_ERROR);

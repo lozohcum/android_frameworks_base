@@ -46,6 +46,7 @@ import android.os.Environment;
 import android.os.Process;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,13 +56,21 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.systemui.R;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * POD used in the AsyncTask which saves an image in the background.
@@ -84,6 +93,9 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
     private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
     private static final String SCREENSHOT_FILE_PATH_TEMPLATE = "%s/%s/%s";
 
+    private static final String LOG_ZIP_FILE_PATH_TEMPLATE = "%s/%s/%s";
+    private static final String LOG_ZIP_FILE_NAME_TEMPLATE = "LogFile_%s.zip";
+
     private int mNotificationId;
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotificationBuilder;
@@ -91,6 +103,9 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
     private String mImageFilePath;
     private long mImageTime;
     private BigPictureStyle mNotificationStyle;
+    public Context mContext;
+
+    public String mLogPath;
 
     // WORKAROUND: We want the same notification across screenshots that we update so that we don't
     // spam a user's notification drawer.  However, we only show the ticker for the saving state
@@ -243,6 +258,65 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
             Notification n = mNotificationBuilder.build();
             n.flags &= ~Notification.FLAG_NO_CLEAR;
             mNotificationManager.notify(mNotificationId, n);
+            if (this.mLogPath != null && !this.mLogPath.isEmpty()) {
+                // Begin to create zip file
+                try {
+                    String[] mLogPaths = mLogPath.split("\\|");
+                    String mLogcatPath = mLogPaths[0];
+                    String mKernelLogPath = mLogPaths[1];
+                    int mBuffSize = 512;
+                    byte[] mBuff = new byte[mBuffSize];
+                    int mReadedByte = 0;
+                    String zipDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date(mImageTime));
+                    String mLogZipFileName = String.format(LOG_ZIP_FILE_NAME_TEMPLATE, zipDate);
+                    String mLogZipFilePath = String.format(LOG_ZIP_FILE_PATH_TEMPLATE,
+                            Environment.getExternalStorageDirectory().getPath()
+                            , "shendu/Log"
+                            , mLogZipFileName);
+                    try {
+                    File mDirectory = new File(String.format(LOG_ZIP_FILE_PATH_TEMPLATE,
+                            Environment.getExternalStorageDirectory().getPath()
+                            , "shendu/Log"
+                            , ""));
+                    mDirectory.mkdirs();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    ZipOutputStream mZipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(mLogZipFilePath)));
+                    FileInputStream mFileIn = new FileInputStream(mImageFilePath);
+
+                    mZipOut.putNextEntry(new ZipEntry(mImageFileName));
+                    while((mReadedByte = mFileIn.read(mBuff))>0){
+                        mZipOut.write(mBuff , 0 , mReadedByte);
+                        }
+                    mFileIn.close();
+                    mZipOut.closeEntry();
+
+                    mFileIn = new FileInputStream(mLogcatPath);
+                    mZipOut.putNextEntry(new ZipEntry("Logcat.txt"));
+                    while((mReadedByte = mFileIn.read(mBuff))>0){
+                        mZipOut.write(mBuff , 0 , mReadedByte);
+                        }
+                    mFileIn.close();
+                    mZipOut.closeEntry();
+
+                    mFileIn = new FileInputStream(mKernelLogPath);
+                    mZipOut.putNextEntry(new ZipEntry("KernelLog.txt"));
+                    while((mReadedByte = mFileIn.read(mBuff))>0){
+                        mZipOut.write(mBuff , 0 , mReadedByte);
+                        }
+                    mFileIn.close();
+                    mZipOut.closeEntry();
+
+                    // Toast
+                    String toastText = String.format(mContext.getString(R.string.log_dump_text), mLogZipFilePath);
+                    Toast.makeText(mContext, toastText, Toast.LENGTH_LONG).show();
+                    mZipOut.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         params.finisher.run();
     }
@@ -282,6 +356,7 @@ class GlobalScreenshot {
     private ImageView mBackgroundView;
     private ImageView mScreenshotView;
     private ImageView mScreenshotFlash;
+    private String mLogPath;
 
     private AnimatorSet mScreenshotAnimation;
 
@@ -290,7 +365,6 @@ class GlobalScreenshot {
     private float mBgPaddingScale;
 
     private MediaActionSound mCameraSound;
-
 
     /**
      * @param context everything needs a context :(
@@ -355,8 +429,11 @@ class GlobalScreenshot {
         data.image = mScreenBitmap;
         data.iconSize = mNotificationIconSize;
         data.finisher = finisher;
-        new SaveImageInBackgroundTask(mContext, data, mNotificationManager,
-                SCREENSHOT_NOTIFICATION_ID).execute(data);
+        SaveImageInBackgroundTask mSaveImageTask = new SaveImageInBackgroundTask(mContext, data, mNotificationManager,
+                SCREENSHOT_NOTIFICATION_ID);
+        mSaveImageTask.mLogPath = this.mLogPath;
+        mSaveImageTask.mContext = this.mContext;
+        mSaveImageTask.execute(data);
     }
 
     /**
@@ -598,6 +675,10 @@ class GlobalScreenshot {
             });
         }
         return anim;
+    }
+
+    public void setLogPath(String logPath) {
+        this.mLogPath = logPath;
     }
 
     static void notifyScreenshotError(Context context, NotificationManager nManager) {
