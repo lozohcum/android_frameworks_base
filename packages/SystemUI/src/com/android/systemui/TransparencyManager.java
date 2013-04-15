@@ -71,8 +71,7 @@ public class TransparencyManager {
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
         
-        mStatusbarInfo.homeAlpha = 0.5f;
-        mStatusbarInfo.keyguardAlpha = 0;
+        updateSettings();
     }
 
     public void update() {
