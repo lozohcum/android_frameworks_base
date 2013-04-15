@@ -951,7 +951,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                String savePath = Environment.getExternalStorageDirectory().getPath() + "/";
                java.lang.Process process = Runtime.getRuntime().exec("su");
                DataOutputStream os = new DataOutputStream(process.getOutputStream());
-               os.writeBytes("mkdir " + savePath);
+               os.writeBytes("mkdir " + savePath + "\n");
                os.writeBytes("logcat -v time -d -f " + savePath + "logcat.txt" + "\n");
                os.writeBytes("dmesg > " + savePath + "dmesg.txt" + "\n");
                os.writeBytes("exit\n");
