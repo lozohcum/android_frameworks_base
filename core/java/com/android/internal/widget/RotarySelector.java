@@ -1408,11 +1408,11 @@ public class RotarySelector extends View {
      */
     private synchronized void vibrate() {
         ContentResolver cr = mContext.getContentResolver();
-        final boolean hapticsEnabled = Settings.System.getInt(cr, Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 1;
-        if (hapticsEnabled) {
-            long[] hapFeedback = new long[] { 0 };
+        final boolean hapticsEnabled = Settings.System.getInt(cr, Settings.System.LOCKSCREEN_VIBRATE_ENABLED, 1) == 1;
+        if (hapticsEnabled && mVibrator != null) {
+//            long[] hapFeedback = new long[] { 0 };
 //            		Settings.System.getLongArray(cr, Settings.System.HAPTIC_DOWN_ARRAY, new long[] { 0 });
-            mVibrator.vibrate(hapFeedback, -1);
+            mVibrator.vibrate(20);
         }
     }
 
