@@ -55,7 +55,7 @@ public class NetworkStateUtil {
         } else {
             // result = "No network";
         }
-        if (result.equals("")) {
+        if (result == null || result.isEmpty()) {
             result = mContext.getResources().getString(R.string.click_to_connect_wifi);
         }
         return result;
