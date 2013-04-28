@@ -25,8 +25,6 @@
 
 #include <utils/Vector.h>
 
-#include <cutils/properties.h>
-
 #include <gui/SurfaceTexture.h>
 #include <gui/Surface.h>
 #include <camera/Camera.h>
@@ -570,40 +568,6 @@ static void android_hardware_Camera_setPreviewTexture(JNIEnv *env,
 
 static void android_hardware_Camera_startPreview(JNIEnv *env, jobject thiz)
 {
-	    /*
-     *  add by qiwu.huang  huangqiwu@shendu.com
-     *  Copyright Reserved @ShenDuOS
-     */
-        char ShenDuMod[PROPERTY_VALUE_MAX];
-        char ShenDuTmp[PROPERTY_VALUE_MAX];
-        char *ShenDuVer = "ShenDu";
-        property_get("ro.shendu.version", ShenDuMod, "");  //get ro.shendu.version
-        strncpy(ShenDuTmp,ShenDuMod,6);
-
-        char CMMod[PROPERTY_VALUE_MAX];
-        char CMTmp[PROPERTY_VALUE_MAX];
-        property_get("ro.cm.version", CMMod, "");  //get ro.cm.version
-        strncpy(CMTmp,CMMod,6);
-
-        char modversion[PROPERTY_VALUE_MAX];
-        char modversiontmp[PROPERTY_VALUE_MAX];
-        property_get("ro.modversion", modversion, "");  //get ro.modversion
-        strncpy(modversiontmp,modversion,6);
-
-        bool noModify = false;
-
-        if (*ShenDuTmp != 0 && *ShenDuTmp == *ShenDuVer && *ShenDuVer == *CMTmp && *ShenDuVer == *modversiontmp)
-        {
-			    //ALOGD(" ==========Version = ShenDu==============!!\n");
-                noModify = true;
-          }
-
-		if (!noModify)
-		{
-			//ALOGD(" ==========Version != ShenDu==============!!\n");
-			return;
-		}
-
     ALOGV("startPreview");
     sp<Camera> camera = get_native_camera(env, thiz, NULL);
     if (camera == 0) return;
