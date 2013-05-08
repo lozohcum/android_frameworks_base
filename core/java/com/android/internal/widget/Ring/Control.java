@@ -550,6 +550,10 @@ public class Control{
 						centPoint[0] + bgRadius, 
 						centPoint[1] + bgRadius);
 						
+        if (viewList == null) {
+            loge("Error: ViewList is NULL");
+            return;
+        }
 		for(ViewInterface vi: viewList){
 			vi.reset();
 		}
