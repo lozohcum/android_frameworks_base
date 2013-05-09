@@ -550,14 +550,13 @@ public class Control{
 						centPoint[0] + bgRadius, 
 						centPoint[1] + bgRadius);
 						
-        if (viewList == null) {
-            loge("Error: ViewList is NULL");
-            return;
+        if (viewList != null) {
+		    for(ViewInterface vi: viewList){
+			    vi.reset();
+		    }
         }
-		for(ViewInterface vi: viewList){
-			vi.reset();
-		}
-		if(mainView!=null)	mainView.postInvalidate();
+		if(mainView!=null)
+            mainView.postInvalidate();
 		//if(debug) dump();
 		logd("ret over left,right,top,bottom");
 		logw("imageRectF:["+imageRectF.left+","+imageRectF.right+","+imageRectF.top+","+imageRectF.bottom+"]");
