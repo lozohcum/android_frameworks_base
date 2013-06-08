@@ -894,7 +894,9 @@ class LockScreen extends LinearLayout implements KeyguardScreen ,RotarySelector.
         		inflater.inflate(R.layout.keyguard_screen_tab_unlock_ring_shendu, this, true);
         	}else if(lockStyle == 2){//下拉
         		inflater.inflate(R.layout.keyguard_screen_tab_unlock, this, true);
-        	}
+               } else if (lockStyle ==3) { //Orig
+                        inflater.inflate(R.layout.keyguard_screen_tab_unlock_orig, this, true);
+               }
         } else {
         
         	inflater.inflate(R.layout.keyguard_screen_tab_unlock_land, this, true);

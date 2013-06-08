@@ -1361,6 +1361,7 @@
   <java-symbol type="layout" name="keyguard_screen_tab_unlock_ring" />
   <java-symbol type="layout" name="keyguard_screen_tab_unlock_ring_shendu" />
   <java-symbol type="layout" name="keyguard_screen_tab_unlock" />
+  <java-symbol type="layout" name="keyguard_screen_tab_unlock_orig" />
   <java-symbol type="layout" name="keyguard_screen_tab_unlock_land" />
   <java-symbol type="layout" name="keyguard_screen_unlock_landscape" />
   <java-symbol type="layout" name="keyguard_screen_unlock_portrait" />
