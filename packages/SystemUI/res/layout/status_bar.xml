@@ -72,6 +72,12 @@
                 android:orientation="horizontal"/>  
         </LinearLayout>
 
+        <com.android.systemui.statusbar.policy.NetspeedView
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            />
         <LinearLayout android:id="@+id/statusIcons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

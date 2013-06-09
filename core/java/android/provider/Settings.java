@@ -2482,6 +2482,15 @@ public final class Settings {
          */
         public static final String STATUS_BAR_SIGNAL_TEXT = "status_bar_signal";
 
+        /**
+         * Whether to show network speed on status bar
+         * default: 0
+         * 0: show network speed
+         * 1: don't show
+         * @hide
+         */
+        public static final String STATUS_BAR_NET_SPD = "status_bar_netspd";
+
          /**
          * Whether to control brightness from status bar
          *
