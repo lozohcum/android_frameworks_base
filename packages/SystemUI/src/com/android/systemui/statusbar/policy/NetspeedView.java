@@ -128,7 +128,7 @@ public class NetspeedView extends TextView {
                     break;
                 case 1:
                 	if (mNetspeedSwitch == 1) {
-                		setText(rxspd+"kb/s");
+                		setText(rxspd+"K/S");
                 		setVisibility(View.VISIBLE);
                 	}
                     break;
@@ -142,7 +142,7 @@ public class NetspeedView extends TextView {
 			public void run() {
 				mMutexLock = true;
                 int sNum = 0;
-				while(mNetspeedSwitch == 1) {
+				while(mNetworkStats && (mNetspeedSwitch == 1)) {
 					try {
 						long rxspd_bf = TrafficStats.getTotalRxBytes() / 1024;
 						Thread.sleep(1000);
