@@ -230,9 +230,11 @@ class KeyguardStatusViewManager implements OnClickListener {
 
         mCarrierView = (TextView) findViewById(R.id.carrier);
         mDateView = (TextView) findViewById(R.id.date);
-        mDateView.setTypeface(sDateFont);
+        if(mDateView != null)
+		mDateView.setTypeface(sDateFont);
         mStatus1View = (TextView) findViewById(R.id.status1);
         mAlarmStatusView = (TextView) findViewById(R.id.alarm_status);
+        if(mAlarmStatusView != null)
         mAlarmStatusView.setTypeface(sDateFont);
         mOwnerInfoView = (TextView) findViewById(R.id.propertyOf);
         mDateLineView = (LinearLayout) findViewById(R.id.date_line);
