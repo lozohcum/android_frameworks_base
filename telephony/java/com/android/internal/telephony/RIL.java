@@ -579,6 +579,20 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 mSocket = s;
                 Log.i(LOG_TAG, "Connected to '" + SOCKET_NAME_RIL + "' socket");
 
+                /* Compatibility with qcom's DSDS (Dual SIM) stack */
+                if (needsOldRilFeature("qcomdsds")) {
+                    String str = "SUB1";
+                    byte[] data = str.getBytes();
+                    try {
+                        mSocket.getOutputStream().write(data);
+                        Log.i(LOG_TAG, "Data sent!!");
+                    } catch (IOException ex) {
+                            Log.e(LOG_TAG, "IOException", ex);
+                    } catch (RuntimeException exc) {
+                        Log.e(LOG_TAG, "Uncaught exception ", exc);
+                    }
+                }
+
                 int length = 0;
                 try {
                     InputStream is = mSocket.getInputStream();
@@ -3264,29 +3278,18 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
     protected Object
     responseDataCallList(Parcel p) {
-        ArrayList<DataCallState> response,response_sublist;
+        ArrayList<DataCallState> response;
         boolean oldRil = needsOldRilFeature("datacall");
         int ver = (oldRil ? 3 : p.readInt());
         int num = p.readInt();
-        int num_adj = num;
+        riljLog("responseDataCallList ver=" + ver + " num=" + num);
 
         response = new ArrayList<DataCallState>(num);
         for (int i = 0; i < num; i++) {
-            try {
-                response.add(getDataCallState(p, ver));
-            } catch (RuntimeException e) {
-                if (e.getMessage() == "getDataCallState, no ifname and/or active call without ip address")
-                    --num_adj;
-                else throw e;
-            }
+            response.add(getDataCallState(p, ver));
         }
 
-        riljLog("responseDataCallList ver=" + ver + " num=" + num_adj);
-
-        if (num_adj != num) {
-            response_sublist =  new ArrayList<DataCallState>(response.subList(0,num_adj));
-            return response_sublist;
-        } else return response;
+        return response;
     }
 
     protected Object
@@ -3763,12 +3766,6 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_RIL_CONNECTED: return "UNSOL_RIL_CONNECTED";
             case RIL_UNSOL_VOICE_RADIO_TECH_CHANGED: return "UNSOL_VOICE_RADIO_TECH_CHANGED";
             case RIL_UNSOL_STK_SEND_SMS_RESULT: return "RIL_UNSOL_STK_SEND_SMS_RESULT";
-            case RIL_UNSOL_ENTER_LPM: return "UNSOL_ENTER_LPM";
-            case RIL_UNSOL_CDMA_3G_INDICATOR: return "UNSOL_CDMA_3G_INDICATOR";
-            case RIL_UNSOL_CDMA_ENHANCE_ROAMING_INDICATOR: return "UNSOL_CDMA_ENHANCE_ROAMING_INDICATOR";
-            case RIL_UNSOL_RESPONSE_PHONE_MODE_CHANGE: return "UNSOL_RESPONSE_PHONE_MODE_CHANGE";
-            case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED: return "UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED";
-            case RIL_UNSOL_RESPONSE_DATA_NETWORK_STATE_CHANGED: return "UNSOL_RESPONSE_DATA_NETWORK_STATE_CHANGED";
             default: return "<unknown response: "+request+">";
         }
     }

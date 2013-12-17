@@ -35,12 +35,73 @@ import android.util.Log;
  * {@hide}
  */
 
-public class SonyQualcommRIL extends QualcommSharedRIL implements CommandsInterface {
+public class SonyQualcommRIL7x27a extends QualcommSharedRIL implements CommandsInterface {
     boolean RILJ_LOGV = true;
     boolean RILJ_LOGD = true;
 
-    public SonyQualcommRIL(Context context, int networkMode, int cdmaSubscription) {
+    public SonyQualcommRIL7x27a(Context context, int networkMode, int cdmaSubscription) {
         super(context, networkMode, cdmaSubscription);
+    }
+
+    @Override public void
+    supplyIccPin2(String pin, Message result) {
+        supplyIccPin2ForApp(pin, null, result);
+    }
+
+    @Override public void
+    changeIccPin2(String oldPin2, String newPin2, Message result) {
+        changeIccPin2ForApp(oldPin2, newPin2, null, result);
+    }
+
+    @Override public void
+    supplyIccPuk(String puk, String newPin, Message result) {
+        supplyIccPukForApp(puk, newPin, null, result);
+    }
+
+    @Override public void
+    supplyIccPuk2(String puk2, String newPin2, Message result) {
+        supplyIccPuk2ForApp(puk2, newPin2, null, result);
+    }
+
+    @Override
+    public void
+    queryFacilityLock(String facility, String password, int serviceClass,
+                            Message response) {
+        queryFacilityLockForApp(facility, password, serviceClass, null, response);
+    }
+
+    @Override
+    public void
+    setFacilityLock (String facility, boolean lockState, String password,
+                        int serviceClass, Message response) {
+        setFacilityLockForApp(facility, lockState, password, serviceClass, null, response);
+    }
+
+    @Override
+    public void
+    getIMSI(Message result) {
+        getIMSIForApp(null, result);
+    }
+
+    public void
+    getIMSIForApp(String aid, Message result) {
+        RILRequest rr = RILRequest.obtain(RIL_REQUEST_GET_IMSI, result);
+
+        rr.mp.writeInt(1);
+        rr.mp.writeString(aid);
+
+        if (RILJ_LOGD) riljLog(rr.serialString() +
+                              "> getIMSI: " + requestToString(rr.mRequest)
+                              + " aid: " + aid);
+
+        send(rr);
+    }
+
+    @Override
+    public void
+    iccIO (int command, int fileid, String path, int p1, int p2, int p3,
+            String data, String pin2, Message result) {
+        iccIOForApp(command, fileid, path, p1, p2, p3, data, pin2, null, result);
     }
 
     @Override
@@ -180,7 +241,7 @@ public class SonyQualcommRIL extends QualcommSharedRIL implements CommandsInterf
             case RIL_REQUEST_ACKNOWLEDGE_INCOMING_GSM_SMS_WITH_PDU: ret = responseVoid(p); break;
             case RIL_REQUEST_STK_SEND_ENVELOPE_WITH_STATUS: ret = responseICC_IO(p); break;
             case RIL_REQUEST_VOICE_RADIO_TECH: ret = responseInts(p); break;
-            case 121: ret = responseVoid(p); break; // RIL_REQUEST_SET_TRANSMIT_POWER
+            case 117: ret = responseVoid(p); break; // RIL_REQUEST_SET_TRANSMIT_POWER
 
             default:
                 throw new RuntimeException("Unrecognized solicited response: " + rr.mRequest);
@@ -220,54 +281,17 @@ public class SonyQualcommRIL extends QualcommSharedRIL implements CommandsInterf
 
     @Override
     public void
-    dial(String address, int clirMode, UUSInfo uusInfo, Message result) {
-        RILRequest rr = RILRequest.obtain(RIL_REQUEST_DIAL, result);
+    setNetworkSelectionModeManual(String operatorNumeric, Message response) {
+        RILRequest rr
+                = RILRequest.obtain(RIL_REQUEST_SET_NETWORK_SELECTION_MANUAL,
+                                    response);
 
-        rr.mp.writeString(address);
-        rr.mp.writeInt(clirMode);
-
-        if (uusInfo == null) {
-            rr.mp.writeInt(0); // UUS information is absent
-        } else {
-            rr.mp.writeInt(1); // UUS information is present
-            rr.mp.writeInt(uusInfo.getType());
-            rr.mp.writeInt(uusInfo.getDcs());
-            rr.mp.writeByteArray(uusInfo.getUserData());
-        }
-
-        if (!needsOldRilFeature("qcomdsds"))
-            rr.mp.writeInt(255);
-
-        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
-
-        send(rr);
-    }
-
-    public void
-    setNetworkSelectionMode(String operatorNumeric, Message response) {
-        RILRequest rr;
-
-        if (operatorNumeric == null)
-            rr = RILRequest.obtain(RIL_REQUEST_SET_NETWORK_SELECTION_AUTOMATIC, response);
-        else
-            rr = RILRequest.obtain(RIL_REQUEST_SET_NETWORK_SELECTION_MANUAL, response);
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest)
+                    + " " + operatorNumeric);
 
         rr.mp.writeString(operatorNumeric);
-        rr.mp.writeInt(-1);
 
         send(rr);
-    }
-
-    @Override
-    public void
-    setNetworkSelectionModeAutomatic(Message response) {
-        setNetworkSelectionMode(null, response);
-    }
-
-    @Override
-    public void
-    setNetworkSelectionModeManual(String operatorNumeric, Message response) {
-        setNetworkSelectionMode(operatorNumeric, response);
     }
 
     @Override

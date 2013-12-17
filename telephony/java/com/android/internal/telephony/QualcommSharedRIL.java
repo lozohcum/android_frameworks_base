@@ -185,28 +185,26 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
             }
             status.addApplication(ca);
         }
-        if(!needsOldRilFeature("skipCdma")){
-            int appIndex = -1;
-            if (mPhoneType == RILConstants.CDMA_PHONE && !skipCdmaSubcription) {
-                appIndex = status.getCdmaSubscriptionAppIndex();
-                Log.d(LOG_TAG, "ICCCARD: This is a CDMA PHONE " + appIndex);
-            } else {
-                appIndex = status.getGsmUmtsSubscriptionAppIndex();
-                Log.d(LOG_TAG, "This is a GSM PHONE " + appIndex);
-            }
+        int appIndex = -1;
+        if (mPhoneType == RILConstants.CDMA_PHONE && !skipCdmaSubcription) {
+            appIndex = status.getCdmaSubscriptionAppIndex();
+            Log.d(LOG_TAG, "This is a CDMA PHONE " + appIndex);
+        } else {
+            appIndex = status.getGsmUmtsSubscriptionAppIndex();
+            Log.d(LOG_TAG, "This is a GSM PHONE " + appIndex);
+        }
 
-            if (numApplications > 0) {
-                IccCardApplication application = status.getApplication(appIndex);
-                mAid = application.aid;
-                mUSIM = application.app_type
+        if (numApplications > 0) {
+            IccCardApplication application = status.getApplication(appIndex);
+            mAid = application.aid;
+            mUSIM = application.app_type
                       == IccCardApplication.AppType.APPTYPE_USIM;
-                mSetPreferredNetworkType = mPreferredNetworkType;
+            mSetPreferredNetworkType = mPreferredNetworkType;
 
             if (TextUtils.isEmpty(mAid))
-                mAid = "";
-                Log.d(LOG_TAG, "mAid " + mAid);
-            }
-	}
+               mAid = "";
+            Log.d(LOG_TAG, "mAid " + mAid);
+        }
 
         return status;
     }
@@ -227,6 +225,10 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
             dataCall.active = p.readInt();
             dataCall.type = p.readString();
             dataCall.ifname = p.readString();
+            if ((dataCall.status == DataConnection.FailCause.NONE.getErrorCode()) &&
+                    TextUtils.isEmpty(dataCall.ifname) && dataCall.active != 0) {
+              throw new RuntimeException("getDataCallState, no ifname");
+            }
             String addresses = p.readString();
             if (!TextUtils.isEmpty(addresses)) {
                 dataCall.addresses = addresses.split(" ");
@@ -238,11 +240,6 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
             String gateways = p.readString();
             if (!TextUtils.isEmpty(gateways)) {
                 dataCall.gateways = gateways.split(" ");
-            }
-            if (((dataCall.status == DataConnection.FailCause.NONE.getErrorCode()) &&
-                    TextUtils.isEmpty(dataCall.ifname)) ||
-                ((dataCall.active != 0) && TextUtils.isEmpty(addresses))) {
-              throw new RuntimeException("getDataCallState, no ifname and/or active call without ip address");
             }
         } else {
             dataCall.version = 4; // was dataCall.version = version;
@@ -709,16 +706,13 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
                         mRil.setRadioState(CommandsInterface.RadioState.RADIO_ON);
                     } else {
                         int appIndex = -1;
-                        if (mPhoneType == RILConstants.CDMA_PHONE) {
+                        if (mPhoneType == RILConstants.CDMA_PHONE && !skipCdmaSubcription) {
                             appIndex = status.getCdmaSubscriptionAppIndex();
-                            Log.d(LOG_TAG, "Quallcomm: This is a CDMA PHONE " + appIndex);
+                            Log.d(LOG_TAG, "This is a CDMA PHONE " + appIndex);
                         } else {
                             appIndex = status.getGsmUmtsSubscriptionAppIndex();
                             Log.d(LOG_TAG, "This is a GSM PHONE " + appIndex);
                         }
-
-                        if ( appIndex < 0 )
-                            appIndex = 0;
 
                         IccCardApplication application = status.getApplication(appIndex);
                         IccCardApplication.AppState app_state = application.app_state;
