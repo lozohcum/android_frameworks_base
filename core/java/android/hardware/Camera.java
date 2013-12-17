@@ -1809,7 +1809,6 @@ public class Camera {
         private static final String KEY_POWER_MODE_SUPPORTED = "power-mode-supported";
         private static final String KEY_VIDEO_STABILIZATION = "video-stabilization";
         private static final String KEY_VIDEO_STABILIZATION_SUPPORTED = "video-stabilization-supported";
-        private static final String KEY_SINGLE_ISP_OUTPUT_ENABLED = "single-isp-output-enabled";
         private static final String KEY_SHARPNESS = "sharpness";
         private static final String KEY_MAX_SHARPNESS = "max-sharpness";
         private static final String KEY_CONTRAST = "contrast";
@@ -2335,7 +2334,7 @@ public class Camera {
 
         private void set(String key, List<Area> areas) {
             if (areas == null) {
-                set(key, "(-1000,-1000,1000,1000,1000)");
+                set(key, "(0,0,0,0,0)");
             } else {
                 StringBuilder buffer = new StringBuilder();
                 for (int i = 0; i < areas.size(); i++) {
@@ -4615,24 +4614,6 @@ public class Camera {
         public List<String> getSupportedFaceDetectionModes() {
             String str = get(KEY_FACE_DETECTION + SUPPORTED_VALUES_SUFFIX);
             return split(str);
-        }
-
-        /**
-         * Returns true if single output is enabled.
-         * If true, Camcorder application must use
-         * same resolution for both preview and video.
-         * If false, Camcorder application can use
-         * preview resolution which need not be equal
-         * to video resolution.
-         * But the selected preview resolution aspect ratio
-         * should match with the selected video resolution
-         * aspect ratio
-         *
-         * @return true if single output is enabled.
-         */
-        public boolean isSingleOutputEnabled(){
-            String str = get(KEY_SINGLE_ISP_OUTPUT_ENABLED);
-            return TRUE.equals(str);
         }
 
         // Splits a comma delimited string to an ArrayList of String.
