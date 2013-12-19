@@ -380,6 +380,26 @@ public class RingtoneManager {
                 themeRegularCursor, themeNotifCursor },
                 MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
     }
+    /**
+     * get external db audio data 
+     * @return
+     * add 2012.07.13 by liuyongsheng
+     */
+    public Cursor getExternalCursor() {
+        if (mCursor != null && mCursor.requery()) {
+            return mCursor;
+        }
+        
+        final Cursor drmCursor = mIncludeDrm ? getDrmRingtones() : null;
+        final Cursor mediaCursor = getExternalMediaRingtones();
+        final Cursor themeRegularCursor = getThemeRegularRingtones();
+        final Cursor themeNotifCursor = getThemeNotificationRingtones();
+
+        //return mediaCursor;
+        return mCursor = new SortCursor(new Cursor[] { drmCursor, mediaCursor,
+                themeRegularCursor, themeNotifCursor },
+                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+    }
 
     /**
      * Gets a {@link Ringtone} for the ringtone at the given position in the
@@ -517,7 +537,28 @@ public class RingtoneManager {
                     MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
                 : null;
     }
-   
+
+    /**
+     * select sdcard media ringtones list
+     *
+     * constructBooleanTrueWhereClause(null):mFilterColumns = null 
+     * query all media data in sdcard
+     * @return
+     * add 2012.07.13 by liuyongsheng
+     */
+    private Cursor getExternalMediaRingtones() {
+        // Get the external media cursor. First check to see if it is mounted.
+       final String status = Environment.getExternalStorageState();
+       
+       return (status.equals(Environment.MEDIA_MOUNTED) ||
+                   status.equals(Environment.MEDIA_MOUNTED_READ_ONLY))
+               ? query(
+                   MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MEDIA_COLUMNS,
+                   constructBooleanTrueWhereClause(null,mIncludeDrm), null,
+                   MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
+               : null;
+   }
+    
     private String getThemeWhereClause(String uriColumn) {
         /* Filter out themes with no ringtone and the default theme (which has no package). */
         String clause = uriColumn + " IS NOT NULL AND LENGTH(theme_package) > 0";

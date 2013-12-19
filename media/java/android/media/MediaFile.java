@@ -47,13 +47,15 @@ public class MediaFile {
     public static final int FILE_TYPE_AAC     = 8;
     public static final int FILE_TYPE_MKA     = 9;
     public static final int FILE_TYPE_FLAC    = 10;
+    public static final int FILE_TYPE_APE     = 11;
+    public static final int FILE_TYPE_RA      = 12;
     private static final int FIRST_AUDIO_FILE_TYPE = FILE_TYPE_MP3;
-    private static final int LAST_AUDIO_FILE_TYPE = FILE_TYPE_FLAC;
+    private static final int LAST_AUDIO_FILE_TYPE = FILE_TYPE_RA;
 
     // MIDI file types
-    public static final int FILE_TYPE_MID     = 11;
-    public static final int FILE_TYPE_SMF     = 12;
-    public static final int FILE_TYPE_IMY     = 13;
+    public static final int FILE_TYPE_MID     = 15;
+    public static final int FILE_TYPE_SMF     = 16;
+    public static final int FILE_TYPE_IMY     = 17;
     private static final int FIRST_MIDI_FILE_TYPE = FILE_TYPE_MID;
     private static final int LAST_MIDI_FILE_TYPE = FILE_TYPE_IMY;
    
@@ -73,16 +75,22 @@ public class MediaFile {
     
     // More video file types
     public static final int FILE_TYPE_MP2PS   = 200;
+    public static final int FILE_TYPE_RM      = 201;
+    public static final int FILE_TYPE_RMVB    = 202;
+    public static final int FILE_TYPE_DIVX    = 203;
+    public static final int FILE_TYPE_MOV     = 204;
+    public static final int FILE_TYPE_QT      = 205;
+    public static final int FILE_TYPE_FLV     = 206;
     private static final int FIRST_VIDEO_FILE_TYPE2 = FILE_TYPE_MP2PS;
-    private static final int LAST_VIDEO_FILE_TYPE2 = FILE_TYPE_MP2PS;
+    private static final int LAST_VIDEO_FILE_TYPE2 = FILE_TYPE_FLV;
 
     // Image file types
-    public static final int FILE_TYPE_JPEG    = 31;
-    public static final int FILE_TYPE_GIF     = 32;
-    public static final int FILE_TYPE_PNG     = 33;
-    public static final int FILE_TYPE_BMP     = 34;
-    public static final int FILE_TYPE_WBMP    = 35;
-    public static final int FILE_TYPE_WEBP    = 36;
+    public static final int FILE_TYPE_JPEG    = 131;
+    public static final int FILE_TYPE_GIF     = 132;
+    public static final int FILE_TYPE_PNG     = 133;
+    public static final int FILE_TYPE_BMP     = 134;
+    public static final int FILE_TYPE_WBMP    = 135;
+    public static final int FILE_TYPE_WEBP    = 136;
     private static final int FIRST_IMAGE_FILE_TYPE = FILE_TYPE_JPEG;
     private static final int LAST_IMAGE_FILE_TYPE = FILE_TYPE_WEBP;
    
@@ -244,6 +252,16 @@ public class MediaFile {
         addFileType("ZIP", FILE_TYPE_ZIP, "application/zip");
         addFileType("MPG", FILE_TYPE_MP2PS, "video/mp2p");
         addFileType("MPEG", FILE_TYPE_MP2PS, "video/mp2p");
+
+        addFileType("MPE", FILE_TYPE_MP2PS, "video/ffmpeg");
+        addFileType("RM", FILE_TYPE_RM, "video/ffmpeg");
+        addFileType("RMVB", FILE_TYPE_RMVB, "video/ffmpeg");
+        addFileType("MOV", FILE_TYPE_MOV, "video/ffmpeg");
+        addFileType("QT", FILE_TYPE_QT, "video/ffmpeg");
+        addFileType("FLV", FILE_TYPE_FLV, "video/ffmpeg");
+        addFileType("DIVX", FILE_TYPE_DIVX, "video/ffmpeg");
+        addFileType("APE", FILE_TYPE_APE, "video/ffmpeg");
+        addFileType("RA", FILE_TYPE_RA, "video/ffmpeg");
     }
 
     public static boolean isAudioFileType(int fileType) {

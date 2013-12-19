@@ -236,6 +236,16 @@ public class Ringtone {
         return mUri;
     }
 
+    /** {@hide}
+    *add by fwsun 121228
+    *
+    */
+    public void setLoop(boolean loop) {
+         if (mLocalPlayer != null) {
+                mLocalPlayer.setLooping(loop);
+          }
+    }
+
     /**
      * Plays the ringtone.
      */
